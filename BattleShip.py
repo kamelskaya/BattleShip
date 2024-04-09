@@ -1,6 +1,7 @@
 
 import random
 computer_looser = False
+computer_hits = []
 
 
 ##Класс PLAYER с набором кораблей
@@ -11,34 +12,39 @@ class player:
 		self.name = name
 		
 	def player_hit(self,location):
-		for ship in ships:
-			if location in ship.location:
-				ship_hit = True
-		is_player_lose(self)
-			
-	def is_player_lose(self):
-		ships_hit = 0	
-		for ship in ships:
-			if ship.is_hit:
-				ships_hit +=1
-		if ships_hit>=len(ships):
-			self.is_lose=True
-			print("Sorry, but you are loooose!!!")	
+		ship_hit = False
+		for ship in self.ships:
+			for loc in ship.location:
+				if location == loc:
+					ship_hit = True
+					ship.is_hit = True
+					print("BUUUUUUUUUUUUUUUHHHHHHHHHH!!!! Your ship {} sunk!!".format(location))
+		
+		if ship_hit:
+			count_ships_hit = 0	
+			for ship in self.ships:
+				if ship.is_hit:
+					count_ships_hit +=1
+			if count_ships_hit>=len(self.ships):
+				self.is_lose=True
+				print("Sorry, but you are loooose!!!")
+				exit()	
+		else:
+			print("NO, computer is missed in location {}".format(location))
 			
 		
 #Class SHIP		
 class ship:
-	location = {}
+	location = []
 	size = 0
 	is_hit = False
 	
 	def __init__(self,location,size):
-		self.location = location
+		self.location= location
 		self.size = size
  
-#Creating new ship (for player) 
-def new_ship(size=1):
-	ship1_locationstr = input("Enter your ship location with size 1 (like ¨1:2¨ with values from 1 to 5):  ")
+def entering_location():
+	ship1_locationstr = input("Enter your ship location (like ¨1:2¨ with values from 1 to 5):  ")
 	ship1_location = ship1_locationstr.split(":")
 	attemps = 0
 	while (len(ship1_location)!=2):
@@ -48,9 +54,32 @@ def new_ship(size=1):
 		ship1_locationstr = input("It's not location, try again. Location must be two numbers with : (for example 1:3):  ")
 		ship1_location = ship1_locationstr.split(":")	
 		attemps+=1
-		print("{0} / {1}".format(ship1_location,len(ship1_location)))
+		
+	return ship1_locationstr
+ 
+ 
+#Creating new ship (for player) 
+def new_ship(size=1):
+	list_location =[]
+	if size==1:
 	
-	ship1 = ship(ship1_locationstr,1)		
+		location = entering_location() 
+		list_location.append(location)
+		if location == False:
+			return False
+	
+		ship1 = ship(list_location,1)		
+	if size==2:
+		location = entering_location() 
+		if location == False:
+			return False
+		list_location.append(location)
+		
+		location = entering_location() 
+		if location == False:
+			return False
+		list_location.append(location)
+		ship1 = ship(list_location,2)
 	return ship1
 
 #PLAYER HIT	
@@ -60,7 +89,7 @@ def players_hit():
 	attemps = 0
 	while (len(hit_location)!=2):
 		if attemps>=3:
-			print("You can't location your ships. Game over")
+			print("You can't hit")
 			return False
 		hit_locationstr = input("It's not location, try again. Location must be two numbers with : (for example 1:3):  ")
 		hit_location = hit_locationstr.split(":")	
@@ -69,10 +98,11 @@ def players_hit():
 	#Check if the player sank the computer ship
 	was_sank = False
 	for computer_ship in computer_ships:
-		if hit_locationstr == computer_ship.location:
-			print("You sank in ship!!")
-			computer_ship.is_hit = True
-			was_sank = True
+		for loc in computer_ship.location:
+			if hit_locationstr == loc:
+				print("BUUUUUUUUUUUUUUUHHHHHHHHHH!!!! You sank in ship!!")
+				computer_ship.is_hit = True
+				was_sank = True
 			
 	#Check if computer looses
 	if was_sank == True:
@@ -83,8 +113,22 @@ def players_hit():
 		if ships_hit>=len(computer_ships):
 				print("You win!!!")	
 				computer_looser = True
+	else:
+		print("NO, you a missed")
+
+#COMPUTER HIT	
+def computer_hit(player):
+	input("Now hit of computer! Are you ready?")
+	hit_locationstr = str(random.randint(1, 5)) + ":"+str(random.randint(1, 5))
+	while hit_locationstr in computer_hits:
+		hit_locationstr = str(random.randint(1, 5)) + ":"+str(random.randint(1, 5))
+	
+	player.player_hit(hit_locationstr)
+	computer_hits.append(hit_locationstr)
 
 
+
+#################
 ##NEW GAME
 name_player = input("Welcome to Battle Ship! Please, enter your name ")
 player1 = player(name_player)
@@ -95,12 +139,23 @@ if start_game == "y":
 
 	#Create ships for computer
 	computer_ships = []
-	computer_ship1_loc = str(random.randint(1, 5)) + ":"+str(random.randint(1, 5))
-	computer_ship1 = ship(computer_ship1_loc,1)	
-	computer_ship2_loc = str(random.randint(1, 5)) + ":"+str(random.randint(1, 5))
-	computer_ship2 = ship(computer_ship2_loc,1)	
-	computer_ship3_loc = str(random.randint(1, 5)) + ":"+str(random.randint(1, 5))
-	computer_ship3 = ship(computer_ship3_loc,1)	
+	#Ship size 1
+	ship_location = []
+	ship_location.append(str(random.randint(1, 5)) + ":"+str(random.randint(1, 5)))
+	computer_ship1 = ship(ship_location,1)	
+	
+	#Ship size 1
+	ship_location = []
+	ship_location.append(str(random.randint(1, 5)) + ":"+str(random.randint(1, 5)))
+	computer_ship2 = ship(ship_location,1)	
+	
+	#Ship size 2
+	ship_location = []
+	ship_location.append(str(random.randint(1, 5)) + ":"+str(random.randint(1, 5)))
+	ship_location.append(str(random.randint(1, 5)) + ":"+str(random.randint(1, 5)))
+	computer_ship3 = ship(ship_location,2)	
+	
+
 	computer_ships.append(computer_ship1)
 	computer_ships.append(computer_ship2)
 	computer_ships.append(computer_ship3)
@@ -113,7 +168,7 @@ if start_game == "y":
 	ship2 = new_ship()
 	if ship2==False:
 		exit()
-	ship3 = new_ship()
+	ship3 = new_ship(2)
 	if ship3==False:
 		exit()
 	
@@ -124,11 +179,15 @@ if start_game == "y":
 	print("Player ships with location {0},{1},{2}".format(ship1.location,ship2.location,ship3.location))
 	
 	players_hit()
+	computer_hit(player1)
 	attemps=0
-	while computer_looser==False:	
+	while (computer_looser==False and player1.is_lose==False):	
+		print(computer_looser)
 		players_hit()
-		
+		computer_hit(player1)
 		if attemps>=3:
 			print("You can't win. Game over")
 			exit()
 		attemps+=1	
+		
+	
