@@ -3,6 +3,7 @@ import random
 computer_looser = False
 computer_hits = []
 
+
 ##Класс PLAYER с набором кораблей
 class player:
 	ships = []
