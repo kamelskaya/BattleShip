@@ -3,8 +3,8 @@ import random
 computer_looser = False
 computer_hits = []
 
-
-##Класс PLAYER с набором кораблей
+##КЛАССЫ
+#Класс PLAYER с набором кораблей
 class player:
 	ships = []
 	is_lose = False
@@ -31,9 +31,8 @@ class player:
 				exit()	
 		else:
 			print("NO, computer is missed in location {}".format(location))
-			
-		
-#Class SHIP		
+				
+#Класс SHIP		
 class ship:
 	location = []
 	size = 0
@@ -43,6 +42,9 @@ class ship:
 		self.location= location
 		self.size = size
  
+ 
+##ФУНКЦИИ
+#Ввод пользователем местоположения корабля
 def entering_location():
 	ship1_locationstr = input("Enter your ship location (like ¨1:2¨ with values from 1 to 5):  ")
 	ship1_location = ship1_locationstr.split(":")
@@ -56,13 +58,11 @@ def entering_location():
 		attemps+=1
 		
 	return ship1_locationstr
- 
- 
-#Creating new ship (for player) 
+  
+#Создание нового корабля (для игрока) 
 def new_ship(size=1):
 	list_location =[]
 	if size==1:
-	
 		location = entering_location() 
 		list_location.append(location)
 		if location == False:
@@ -137,7 +137,7 @@ start_game = input("Starting new game? y/n ")
 if start_game == "y":
 	computer_looser = False
 
-	#Create ships for computer
+	#Создание кораблей для компьютера
 	computer_ships = []
 	#Ship size 1
 	ship_location = []
@@ -154,14 +154,13 @@ if start_game == "y":
 	ship_location.append(str(random.randint(1, 5)) + ":"+str(random.randint(1, 5)))
 	ship_location.append(str(random.randint(1, 5)) + ":"+str(random.randint(1, 5)))
 	computer_ship3 = ship(ship_location,2)	
-	
 
 	computer_ships.append(computer_ship1)
 	computer_ships.append(computer_ship2)
 	computer_ships.append(computer_ship3)
 	print("Computer ships with location {0},{1},{2}".format(computer_ship1.location,computer_ship2.location,computer_ship3.location))
 	
-	#Create ships for player
+	#Создание кораблей для игрока
 	ship1 = new_ship()
 	if ship1==False:
 		exit()
@@ -175,9 +174,9 @@ if start_game == "y":
 	player.ships.append(ship1)
 	player.ships.append(ship2)
 	player.ships.append(ship3)
-	#player.ships.append(ship4)
 	print("Player ships with location {0},{1},{2}".format(ship1.location,ship2.location,ship3.location))
 	
+	#Игра - удары игрока и компьютера
 	players_hit()
 	computer_hit(player1)
 	attemps=0
